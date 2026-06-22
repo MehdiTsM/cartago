@@ -6,8 +6,44 @@ import {
   FaInstagram,
   FaTiktok,
 } from "react-icons/fa";
+import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 export default function Contact() {
+  const [searchParams] = useSearchParams();
+  const formRef = useRef(null);
+  const didScrollRef = useRef(false);
+
+  const [form, setForm] = useState(() => ({
+    firstName: "",
+    lastName: "",
+    email: "",
+    destination: searchParams.get("destination") || "",
+    idea: searchParams.get("idea") || "",
+  }));
+
+  useEffect(() => {
+    const destination = searchParams.get("destination") || "";
+    const idea = searchParams.get("idea") || "";
+
+    setForm((current) => ({
+      ...current,
+      destination: destination || current.destination,
+      idea: idea || current.idea,
+    }));
+
+    if ((destination || idea) && formRef.current && !didScrollRef.current) {
+      didScrollRef.current = true;
+      window.requestAnimationFrame(() => {
+        formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+  }, [searchParams]);
+
+  function updateField(field, value) {
+    setForm((current) => ({ ...current, [field]: value }));
+  }
+
   return (
     <div className="overflow-hidden">
 
@@ -40,8 +76,8 @@ export default function Contact() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="bg-white/90 backdrop-blur-xl shadow-2xl rounded-[30px] grid md:grid-cols-3 overflow-hidden">
 
-            <Info icon={<FaPhone />} title="Phone" text="+213 XXX XXX XXX" />
-            <Info icon={<FaEnvelope />} title="Email" text="contact@cartago.com" />
+            <Info icon={<FaPhone />} title="Phone" text="0555 77 77 74" />
+            <Info icon={<FaEnvelope />} title="Email" text="cartagotravel.dz@gmail.com" />
             <Info icon={<FaMapMarkerAlt />} title="Location" text="Sidi Yahia, Hydra - Algiers" />
 
           </div>
@@ -65,7 +101,7 @@ export default function Contact() {
       </div>
 
       {/* FORM */}
-      <div>
+      <div ref={formRef}>
         <h2
           className="text-5xl font-bold leading-tight"
           style={{ fontFamily: "Montserrat, sans-serif" }}
@@ -80,32 +116,42 @@ export default function Contact() {
           Fill in the details and our travel experts will come back to you with a personalized plan.
         </p>
 
-        <form className="mt-10 space-y-4">
+        <form className="mt-10 space-y-4" onSubmit={(e) => e.preventDefault()}>
 
           <div className="grid md:grid-cols-2 gap-4">
             <input
+              value={form.firstName}
+              onChange={(e) => updateField("firstName", e.target.value)}
               placeholder="First name"
               className="bg-gray-50 border rounded-2xl px-5 py-4 focus:outline-none focus:border-[#0092A5]"
             />
 
             <input
+              value={form.lastName}
+              onChange={(e) => updateField("lastName", e.target.value)}
               placeholder="Last name"
               className="bg-gray-50 border rounded-2xl px-5 py-4 focus:outline-none focus:border-[#0092A5]"
             />
           </div>
 
           <input
+            value={form.email}
+            onChange={(e) => updateField("email", e.target.value)}
             placeholder="Email address"
             className="w-full bg-gray-50 border rounded-2xl px-5 py-4 focus:outline-none focus:border-[#0092A5]"
           />
 
           <input
+            value={form.destination}
+            onChange={(e) => updateField("destination", e.target.value)}
             placeholder="Where do you want to go?"
             className="w-full bg-gray-50 border rounded-2xl px-5 py-4 focus:outline-none focus:border-[#0092A5]"
           />
 
           <textarea
             rows="5"
+            value={form.idea}
+            onChange={(e) => updateField("idea", e.target.value)}
             placeholder="Tell us your idea..."
             className="w-full bg-gray-50 border rounded-2xl px-5 py-4 focus:outline-none focus:border-[#0092A5]"
           />
@@ -134,30 +180,40 @@ export default function Contact() {
           Fill in the details and our travel experts will come back to you with a personalized plan.
         </p>
 
-        <form className="mt-10 space-y-4">
+        <form className="mt-10 space-y-4" onSubmit={(e) => e.preventDefault()}>
 
           <input
+            value={form.firstName}
+            onChange={(e) => updateField("firstName", e.target.value)}
             placeholder="First name"
             className="w-full bg-gray-50 border rounded-2xl px-5 py-4 focus:outline-none focus:border-[#0092A5]"
           />
 
           <input
+            value={form.lastName}
+            onChange={(e) => updateField("lastName", e.target.value)}
             placeholder="Last name"
             className="w-full bg-gray-50 border rounded-2xl px-5 py-4 focus:outline-none focus:border-[#0092A5]"
           />
 
           <input
+            value={form.email}
+            onChange={(e) => updateField("email", e.target.value)}
             placeholder="Email address"
             className="w-full bg-gray-50 border rounded-2xl px-5 py-4 focus:outline-none focus:border-[#0092A5]"
           />
 
           <input
+            value={form.destination}
+            onChange={(e) => updateField("destination", e.target.value)}
             placeholder="Where do you want to go?"
             className="w-full bg-gray-50 border rounded-2xl px-5 py-4 focus:outline-none focus:border-[#0092A5]"
           />
 
           <textarea
             rows="5"
+            value={form.idea}
+            onChange={(e) => updateField("idea", e.target.value)}
             placeholder="Tell us your idea..."
             className="w-full bg-gray-50 border rounded-2xl px-5 py-4 focus:outline-none focus:border-[#0092A5]"
           />
@@ -204,21 +260,21 @@ export default function Contact() {
   <div className="flex gap-5 mt-8 text-2xl">
 
     <a
-      href="#"
+      href="https://www.facebook.com/share/1Bj3LVxHCa/"
       className="w-12 h-12 flex items-center justify-center rounded-2xl bg-[#0092A5] text-white hover:scale-110 transition"
     >
       <FaFacebookF />
     </a>
 
     <a
-      href="#"
+      href="https://www.instagram.com/cartago_travel_?igsh=eWRscDRxbWVmc3dp"
       className="w-12 h-12 flex items-center justify-center rounded-2xl bg-[#0092A5] text-white hover:scale-110 transition"
     >
       <FaInstagram />
     </a>
 
     <a
-      href="#"
+      href="https://www.tiktok.com/@cartago.travel?_r=1&_t=ZS-97I27vdByh2"
       className="w-12 h-12 flex items-center justify-center rounded-2xl bg-[#0092A5] text-white hover:scale-110 transition"
     >
       <FaTiktok />

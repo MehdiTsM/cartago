@@ -122,7 +122,7 @@ style={{fontFamily:"Montserrat, sans-serif"}}
 
 <div className="flex flex-wrap gap-4 mt-10">
 
-<Link to="/contact">
+<Link to="/contact?destination=Team%20Building&idea=Hello%2C%20I%20want%20to%20book%20a%20team%20building%20trip.%20Can%20I%20get%20more%20information%3F">
 
 <button className="bg-[#fc9403] hover:bg-[#db8102] text-white px-8 py-4 rounded-full font-semibold transition">
 
@@ -459,7 +459,7 @@ className="absolute inset-0 w-full h-full object-cover"
 
 
 <Link
-to="/contact"
+to="/contact?destination=Team%20Building&idea=Hello%2C%20I%20want%20to%20book%20a%20team%20building%20trip.%20Can%20I%20get%20more%20information%3F"
 className="bg-[#fc9403] hover:bg-[#db8102] text-white px-8 py-4 rounded-full font-semibold transition-all duration-300 hover:scale-105"
 >
 

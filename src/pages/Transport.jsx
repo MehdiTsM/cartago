@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { FaBus, FaShuttleVan, FaPlane, FaCheckCircle, FaPhoneAlt } from "react-icons/fa";
 import { MdLocationOn } from "react-icons/md";
 import TransportImage from "../assets/transportImage.jpg";
@@ -192,20 +193,20 @@ export default function Transport() {
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4 shrink-0">
-                <a
-                  href="/contact"
+                <Link
+                  to="/contact?destination=Transport&idea=Hello%2C%20I%20want%20to%20book%20transport%20services.%20Can%20I%20get%20more%20information%3F"
                   className="inline-flex items-center gap-2 bg-[#fc9403] hover:bg-[#db8102] text-white px-8 py-4 rounded-full font-semibold transition-all duration-300 hover:shadow-xl hover:scale-105 whitespace-nowrap"
                 >
                   <FaPhoneAlt className="text-sm" />
                   {t("transport.ctaContact")}
-                </a>
-                <a
-                  href="/destinations"
+                </Link>
+                <Link
+                  to="/destinations"
                   className="inline-flex items-center gap-2 bg-white/15 border border-white/30 backdrop-blur text-white px-8 py-4 rounded-full font-semibold transition-all duration-300 hover:bg-white/25 whitespace-nowrap"
                 >
                   <MdLocationOn className="text-base" />
                   {t("transport.ctaDestinations")}
-                </a>
+                </Link>
               </div>
             </div>
           </div>

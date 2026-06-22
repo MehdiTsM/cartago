@@ -12,41 +12,61 @@ import logo from "../assets/logoBanner.jpg";
 import Banner from '../assets/homeBanner.jpg';
 import { SlOrganization } from "react-icons/sl";
 import { useTranslation } from "react-i18next";
+import { useEffect, useState } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebase";
+import { useLanguage } from "../context/LanguageContext";
+import { localizeRecord } from "../utils/localizeRecord";
 
 
 export default function HomePage() {
+  const { language } = useLanguage();
   const { t } = useTranslation();
+  const [destinations, setDestinations] = useState([]);
+  const [loadingDestinations, setLoadingDestinations] = useState(true);
 
-  const destinations = [
-    {
-      name: "Santorin",
-      country: "Grèce",
-      price: "À partir de 499 €",
-      image:
-        "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?q=80&w=1200&auto=format&fit=crop",
-    },
-    {
-      name: "Bali",
-      country: "Indonésie",
-      price: "À partir de 699 €",
-      image:
-        "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1200&auto=format&fit=crop",
-    },
-    {
-      name: "Dubaï",
-      country: "Émirats Arabes Unis",
-      price: "À partir de 799 €",
-      image:
-        "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1200&auto=format&fit=crop",
-    },
-    {
-      name: "Paris",
-      country: "France",
-      price: "À partir de 399 €",
-      image:
-        "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=1200&auto=format&fit=crop",
-    },
-  ];
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchDestinations() {
+      setLoadingDestinations(true);
+
+      try {
+        const snapshot = await getDocs(collection(db, "destinations"));
+        const records = snapshot.docs
+          .map((doc) => ({
+            ...localizeRecord(doc.data(), language),
+            id: doc.id,
+          }))
+          .filter((doc) => doc.published !== false)
+          .sort((left, right) => {
+            if (left.tag === "Coup de cœur" && right.tag !== "Coup de cœur") return -1;
+            if (right.tag === "Coup de cœur" && left.tag !== "Coup de cœur") return 1;
+            return Number(right.rating || 0) - Number(left.rating || 0);
+          })
+          .slice(0, 4);
+
+        if (!cancelled) {
+          setDestinations(records);
+        }
+      } catch (error) {
+        console.error("Error fetching homepage destinations:", error);
+        if (!cancelled) {
+          setDestinations([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoadingDestinations(false);
+        }
+      }
+    }
+
+    fetchDestinations();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [language]);
 
   return (
     <>
@@ -183,35 +203,63 @@ style={{
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {destinations.map((item) => (
-              <div
-                key={item.name}
-                className="bg-white rounded-[30px] overflow-hidden shadow-lg hover:-translate-y-2 transition"
-              >
-                <img
-                  src={item.image}
-                  alt=""
-                  className="h-64 w-full object-cover"
-                />
-
-                <div className="p-6">
-                  <div className="flex justify-between items-center">
-                    <h3 className="font-bold text-xl">{item.name}</h3>
-
-                    <div className="flex items-center gap-1 text-yellow-500">
-                      <FaStar />
-                      4.9
-                    </div>
+            {loadingDestinations ? (
+              Array.from({ length: 4 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="bg-white rounded-[30px] overflow-hidden shadow-lg animate-pulse"
+                >
+                  <div className="h-64 w-full bg-gray-200" />
+                  <div className="p-6 space-y-4">
+                    <div className="h-5 w-2/3 bg-gray-200 rounded" />
+                    <div className="h-4 w-1/2 bg-gray-200 rounded" />
+                    <div className="h-4 w-1/3 bg-gray-200 rounded" />
                   </div>
-
-                  <p className="text-gray-500 mt-2">{item.country}</p>
-
-                  <p className="text-[#0092A5] font-bold mt-4">
-                    {item.price}
-                  </p>
                 </div>
+              ))
+            ) : destinations.length > 0 ? (
+              destinations.map((item) => (
+                <Link
+                  key={item.id}
+                  to={`/destinations/${item.id}`}
+                  className="bg-white rounded-[30px] overflow-hidden shadow-lg hover:-translate-y-2 transition block"
+                >
+                  <img
+                    src={item.image || item.gallery?.[0]}
+                    alt={item.name}
+                    className="h-64 w-full object-cover"
+                  />
+
+                  <div className="p-6">
+                    <div className="flex justify-between items-start gap-3">
+                      <div>
+                        <h3 className="font-bold text-xl leading-tight">{item.name}</h3>
+                        <p className="text-gray-500 mt-2">{item.country}</p>
+                      </div>
+
+                      <div className="flex items-center gap-1 text-yellow-500 shrink-0">
+                        <FaStar />
+                        <span className="font-semibold text-gray-800">
+                          {item.rating || "4.9"}
+                        </span>
+                      </div>
+                    </div>
+
+                    <p className="text-gray-500 mt-4 line-clamp-3">
+                      {item.description}
+                    </p>
+
+                    <p className="text-[#0092A5] font-bold mt-4">
+                      {item.duration ? `${item.duration} jours` : t("home.viewAll")}
+                    </p>
+                  </div>
+                </Link>
+              ))
+            ) : (
+              <div className="col-span-full text-center py-12 text-gray-500">
+                Aucune destination disponible pour le moment.
               </div>
-            ))}
+            )}
           </div>
         </div>
       </section>

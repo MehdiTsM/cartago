@@ -1,25 +1,26 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { addDoc, collection } from "firebase/firestore";
 import { useTranslation } from "react-i18next";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import BackgroundEffects from "./BackgroundEffects";
 import { db } from "./firebase";
 
-import HomePage from "./pages/HomePage";
-import Contact from "./pages/Contact";
-import Destinations from "./pages/Destinations";
-import DestinationDetails from "./pages/DestinationDetails";
-import ExploreDZ from "./pages/ExploreDZ";
-import About from "./pages/About";
-import Transport from "./pages/Transport";
-import TeamBuilding from "./pages/TeamBuilding";
-import TourismMedical from "./pages/TourismeMedical";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import ExploreDetails from "./pages/ExploreDetails";
+const HomePage = lazy(() => import("./pages/HomePage"));
+const Contact = lazy(() => import("./pages/Contact"));
+const Destinations = lazy(() => import("./pages/Destinations"));
+const DestinationDetails = lazy(() => import("./pages/DestinationDetails"));
+const ExploreDZ = lazy(() => import("./pages/ExploreDZ"));
+const About = lazy(() => import("./pages/About"));
+const Transport = lazy(() => import("./pages/Transport"));
+const TeamBuilding = lazy(() => import("./pages/TeamBuilding"));
+const TourismMedical = lazy(() => import("./pages/TourismeMedical"));
+const Login = lazy(() => import("./pages/Login"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const ExploreDetails = lazy(() => import("./pages/ExploreDetails"));
 
 
 const DASHBOARD_ROUTES = ["/admin-dashboard"];
@@ -100,10 +101,24 @@ function AppLayout() {
   const { pathname } = useLocation();
   const isDashboard = DASHBOARD_ROUTES.includes(pathname);
   const [showRouteSpinner, setShowRouteSpinner] = useState(true);
+  const isFirstRender = useRef(true);
   const { t } = useTranslation();
+  const [showEffects, setShowEffects] = useState(() => {
+    if (typeof window === "undefined") {
+      return true;
+    }
+
+    return window.innerWidth >= 768;
+  });
 
   useEffect(() => {
     window.scrollTo(0, 0);
+
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      setShowRouteSpinner(false);
+      return;
+    }
 
     setShowRouteSpinner(true);
     const timer = window.setTimeout(() => {
@@ -113,27 +128,56 @@ function AppLayout() {
     return () => window.clearTimeout(timer);
   }, [pathname]);
 
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 768px)");
+    const update = () => setShowEffects(media.matches);
+
+    update();
+    media.addEventListener?.("change", update);
+
+    return () => {
+      media.removeEventListener?.("change", update);
+    };
+  }, []);
+
   return (
     <>
-      <BackgroundEffects />
+      {showEffects && <BackgroundEffects />}
       <div className="relative min-h-screen flex flex-col">
         {!isDashboard && <Header />}
 
         <main className="flex-1">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/destinations" element={<Destinations />} />
-            <Route path="/destinations/:id" element={<DestinationDetails />} />
-            <Route path="/explore-dz" element={<ExploreDZ />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/transport" element={<Transport />} />
-            <Route path="/team-building" element={<TeamBuilding />} />
-            <Route path="/tourisme-medical" element={<TourismMedical />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/admin-dashboard" element={<Dashboard />} />
-            <Route path="/explore/:id" element={<ExploreDetails />} />
-          </Routes>
+          <Suspense
+            fallback={
+              <div className="min-h-[50vh] flex items-center justify-center">
+                <div className="text-center">
+                  <div className="w-12 h-12 border-4 border-[#0092A5] border-t-transparent rounded-full animate-spin mx-auto" />
+                  <p className="mt-4 text-sm font-medium text-gray-600">{t("common.loading")}</p>
+                </div>
+              </div>
+            }
+          >
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/destinations" element={<Destinations />} />
+              <Route path="/destinations/:id" element={<DestinationDetails />} />
+              <Route path="/explore-dz" element={<ExploreDZ />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/transport" element={<Transport />} />
+              <Route path="/team-building" element={<TeamBuilding />} />
+              <Route path="/tourisme-medical" element={<TourismMedical />} />
+              <Route path="/login" element={<Login />} />
+<Route
+  path="/admin-dashboard"
+  element={
+    <ProtectedRoute>
+      <Dashboard />
+    </ProtectedRoute>
+  }
+/>              <Route path="/explore/:id" element={<ExploreDetails />} />
+            </Routes>
+          </Suspense>
         </main>
 
         {!isDashboard && <Footer />}

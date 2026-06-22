@@ -6,26 +6,72 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase"; // adjust this path to wherever your Firebase app/db is initialized
 import { useLanguage } from "../context/LanguageContext";
 import { localizeRecord } from "../utils/localizeRecord";
+import { useTranslation } from "react-i18next";
 
-const features = [
-  {
-    icon: FaPlane,
-    title: "Vols inclus",
-    desc: "Tous nos forfaits incluent les billets d'avion aller-retour depuis l'Algérie.",
-  },
-  {
-    icon: FaHotel,
-    title: "Hôtels sélectionnés",
-    desc: "Des établissements testés et validés par notre équipe sur le terrain.",
-  },
-  {
-    icon: FaShieldAlt,
-    title: "Voyagez en confiance",
-    desc: "Assurance annulation, assistance 24h/24 et paiement sécurisé.",
-  },
-];
+const DESTINATIONS_CACHE_PREFIX = "cartago:destinations-cache:";
 
-const filters = ["Tous", "Europe", "Asie", "Afrique", "Moyen-Orient", "Amériques"];
+const REGION_KEYS = {
+  all: "all",
+  tous: "all",
+  "الكل": "all",
+  europe: "europe",
+  asie: "asia",
+  asia: "asia",
+  "آسيا": "asia",
+  afrique: "africa",
+  africa: "africa",
+  "إفريقيا": "africa",
+  "أفريقيا": "africa",
+  "moyen-orient": "middle-east",
+  "middle east": "middle-east",
+  "الشرق الأوسط": "middle-east",
+  "amériques": "americas",
+  ameriques: "americas",
+  americas: "americas",
+  "الأمريكتان": "americas",
+};
+
+function normalizeText(value) {
+  return (value || "").toString().trim().toLowerCase();
+}
+
+function normalizeRegion(value) {
+  const normalized = normalizeText(value);
+  return REGION_KEYS[normalized] || normalized;
+}
+
+function buildSearchText(record) {
+  return ["name", "country", "description", "hotel", "tag"]
+    .flatMap((field) => [
+      record[field],
+      record[`${field}_fr`],
+      record[`${field}_en`],
+      record[`${field}_ar`],
+    ])
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+}
+
+function readDestinationsCache(language) {
+  try {
+    const raw = localStorage.getItem(`${DESTINATIONS_CACHE_PREFIX}${language}`);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeDestinationsCache(language, destinations) {
+  try {
+    localStorage.setItem(
+      `${DESTINATIONS_CACHE_PREFIX}${language}`,
+      JSON.stringify(destinations),
+    );
+  } catch {
+    // Ignore storage failures on private mode / low-storage browsers.
+  }
+}
 
 const tagColors = {
   "Coup de cœur": "bg-[#F1290E] text-white",
@@ -42,19 +88,39 @@ const tagColors = {
 
 export default function DestinationsPage() {
   const { language } = useLanguage();
-  const [destinations, setDestinations] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
+  const page = t("destinationsPage", { returnObjects: true });
+  const features = [
+    { icon: FaPlane, ...page.features.flights },
+    { icon: FaHotel, ...page.features.hotels },
+    { icon: FaShieldAlt, ...page.features.trust },
+  ];
+  const filters = page.filters;
+  const [destinations, setDestinations] = useState(() => readDestinationsCache(language) || []);
+  const [loading, setLoading] = useState(() => !readDestinationsCache(language)?.length);
   const [error, setError] = useState(null);
 
   const [activeFilter, setActiveFilter] = useState("Tous");
   const [search, setSearch] = useState("");
   const [liked, setLiked] = useState({});
 
+  useEffect(() => {
+    setActiveFilter(filters[0]);
+  }, [language]);
+
   // Fetch destinations from Firestore on mount
   useEffect(() => {
     const fetchDestinations = async () => {
-      try {
+      const cachedDestinations = readDestinationsCache(language);
+
+      if (cachedDestinations?.length) {
+        setDestinations(cachedDestinations);
+        setLoading(false);
+      } else {
         setLoading(true);
+      }
+
+      try {
         setError(null);
 
         // Matches your actual Firestore "destinations" collection fields:
@@ -69,9 +135,12 @@ export default function DestinationsPage() {
           .filter((d) => d.published !== false); // hide drafts; remove this line if you don't want filtering
 
         setDestinations(data);
+        writeDestinationsCache(language, data);
       } catch (err) {
         console.error("Error fetching destinations from Firestore:", err);
-        setError("Impossible de charger les destinations pour le moment.");
+        if (!cachedDestinations?.length) {
+          setError("Impossible de charger les destinations pour le moment.");
+        }
       } finally {
         setLoading(false);
       }
@@ -81,10 +150,10 @@ export default function DestinationsPage() {
   }, [language]);
 
   const filtered = destinations.filter((d) => {
-    const matchRegion = activeFilter === "Tous" || d.region === activeFilter;
-    const matchSearch =
-      (d.name || "").toLowerCase().includes(search.toLowerCase()) ||
-      (d.country || "").toLowerCase().includes(search.toLowerCase());
+    const selectedFilter = normalizeRegion(activeFilter);
+    const defaultFilter = normalizeRegion(filters[0]);
+    const matchRegion = selectedFilter === defaultFilter || normalizeRegion(d.region) === selectedFilter;
+    const matchSearch = !search.trim() || buildSearchText(d).includes(search.trim().toLowerCase());
     return matchRegion && matchSearch;
   });
 
@@ -95,7 +164,7 @@ export default function DestinationsPage() {
   const featured =
     destinations.find((d) => d.tag === "Coup de cœur") || destinations[0];
 
-  if (loading) {
+  if (loading && destinations.length === 0) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
         <div className="w-10 h-10 border-4 border-[#0092A5] border-t-transparent rounded-full animate-spin" />
@@ -123,30 +192,29 @@ export default function DestinationsPage() {
           alt=""
           className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
+        <div className="absolute inset-0 bg-linear-to-b from-black/60 via-black/40 to-black/70" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 pt-40 pb-32 text-center">
           <h1
             className="text-5xl md:text-7xl font-extrabold text-white leading-tight"
             style={{ fontFamily: "Montserrat, sans-serif" }}
           >
-            VOS PROCHAINES
-            <span className="block text-[#0092A5]">AVENTURES</span>
-            VOUS ATTENDENT
+            {page.heroTitle}
+            <span className="block text-[#0092A5]">{page.heroTitleAccent}</span>
+            {page.heroTitleEnd}
           </h1>
 
           <p className="mt-6 text-gray-300 text-lg max-w-2xl mx-auto">
-            Plus de 50 destinations soigneusement sélectionnées pour vous
-            offrir des voyages qui marquent à jamais.
+            {page.heroText}
           </p>
 
           {/* Search bar */}
           <div className="mt-12 max-w-2xl mx-auto">
             <div className="flex items-center bg-white rounded-full shadow-2xl px-6 py-4 gap-4">
-              <FaSearch className="text-[#0092A5] text-lg flex-shrink-0" />
+              <FaSearch className="text-[#0092A5] text-lg shrink-0" />
               <input
                 type="text"
-                placeholder="Rechercher une destination, un pays…"
+                placeholder={page.searchPlaceholder}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="flex-1 outline-none text-gray-700 bg-transparent placeholder-gray-400 text-base"
@@ -164,17 +232,13 @@ export default function DestinationsPage() {
 
           {/* Stats strip */}
           <div className="flex justify-center gap-10 mt-14 flex-wrap">
-            {[
-              ["50+", "Destinations"],
-              ["10 000+", "Voyageurs satisfaits"],
-              ["4.9 / 5", "Note moyenne"],
-            ].map(([num, label]) => (
+            {page.stats.map(({ value, label }) => (
               <div key={label} className="text-center">
                 <p
                   className="text-3xl font-extrabold text-white"
                   style={{ fontFamily: "Montserrat, sans-serif" }}
                 >
-                  {num}
+                  {value}
                 </p>
                 <p className="text-gray-400 text-sm mt-1">{label}</p>
               </div>
@@ -190,7 +254,7 @@ export default function DestinationsPage() {
             <button
               key={f}
               onClick={() => setActiveFilter(f)}
-              className={`flex-shrink-0 px-6 py-2.5 rounded-full font-semibold text-sm transition-all duration-200 ${
+              className={`shrink-0 px-6 py-2.5 rounded-full font-semibold text-sm transition-all duration-200 ${
                 activeFilter === f
                   ? "bg-[#0092A5] text-white shadow-md scale-105"
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -209,24 +273,19 @@ export default function DestinationsPage() {
             <span className="font-bold text-gray-800 text-base">
               {filtered.length}
             </span>{" "}
-            destination{filtered.length > 1 ? "s" : ""} trouvée
-            {filtered.length > 1 ? "s" : ""}
+            {filtered.length > 1 ? page.resultsMany : page.resultsOne}
           </p>
 
           {filtered.length === 0 ? (
             <div className="text-center py-24">
               <p className="text-5xl mb-4">🗺️</p>
-              <p className="text-xl font-semibold text-gray-700">
-                Aucune destination trouvée
-              </p>
-              <p className="text-gray-500 mt-2">
-                Essayez un autre terme ou explorez toutes nos destinations.
-              </p>
+              <p className="text-xl font-semibold text-gray-700">{page.emptyTitle}</p>
+              <p className="text-gray-500 mt-2">{page.emptyText}</p>
               <button
-                onClick={() => { setSearch(""); setActiveFilter("Tous"); }}
+                onClick={() => { setSearch(""); setActiveFilter(filters[0]); }}
                 className="mt-6 bg-[#0092A5] text-white px-8 py-3 rounded-full font-semibold"
               >
-                Réinitialiser les filtres
+                {page.resetFilters}
               </button>
             </div>
           ) : (
@@ -237,6 +296,7 @@ export default function DestinationsPage() {
                   dest={dest}
                   liked={liked[dest.id]}
                   onLike={() => toggleLike(dest.id)}
+                    page={page}
                 />
               ))}
             </div>
@@ -285,20 +345,19 @@ export default function DestinationsPage() {
 
             <div className="relative z-10 px-8 py-24 md:px-16 text-center">
               <span className="inline-block bg-white/20 backdrop-blur-sm text-white text-sm font-semibold px-5 py-2 rounded-full tracking-widest uppercase mb-6">
-                Votre voyage sur mesure
+                {page.ctaBadge}
               </span>
 
               <h2
                 className="mt-4 text-4xl md:text-6xl font-bold text-white"
                 style={{ fontFamily: "Montserrat, sans-serif" }}
               >
-                Vous ne trouvez pas
-                <span className="block text-[#0092A5]">ce que vous cherchez ?</span>
+                {page.ctaTitlePrefix}
+                <span className="block text-[#0092A5]">{page.ctaTitleAccent}</span>
               </h2>
 
               <p className="mt-6 max-w-2xl mx-auto text-lg text-gray-200">
-                Nos conseillers vous concocent un voyage entièrement
-                personnalisé selon vos envies, votre budget et vos dates.
+                {page.ctaText}
               </p>
 
               <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
@@ -306,13 +365,13 @@ export default function DestinationsPage() {
                   to="/contact"
                   className="bg-[#fc9403] hover:bg-[#db8102] text-white px-8 py-4 rounded-full font-semibold transition-all duration-300 hover:scale-105"
                 >
-                  Demander un devis gratuit
+                  {page.ctaButton}
                 </Link>
                 <a
                   href="tel:+213000000000"
                   className="bg-white/15 backdrop-blur-md border border-white/20 text-white px-8 py-4 rounded-full font-semibold transition-all duration-300 hover:bg-white/25"
                 >
-                  Appeler un conseiller
+                  {page.ctaCall}
                 </a>
               </div>
             </div>
@@ -325,7 +384,7 @@ export default function DestinationsPage() {
 
 // ─── DESTINATION CARD ────────────────────────────────────────────────────────
 
-function DestinationCard({ dest, liked, onLike }) {
+function DestinationCard({ dest, liked, onLike, page }) {
   return (
     <div className="bg-white rounded-[30px] overflow-hidden shadow-lg hover:-translate-y-2 transition-all duration-300 group flex flex-col">
       <div className="relative overflow-hidden h-56">
@@ -369,7 +428,7 @@ function DestinationCard({ dest, liked, onLike }) {
             <div className="flex items-center gap-3 text-gray-400 text-xs mt-0.5">
               <span className="flex items-center gap-1">
                 <FaClock className="text-[10px]" />
-                {dest.duration} jours
+                {dest.duration} {page.cardDaysSuffix}
               </span>
               <span className="flex items-center gap-1">
                 <FaUsers className="text-[10px]" />
@@ -382,7 +441,7 @@ function DestinationCard({ dest, liked, onLike }) {
             to={`/destinations/${dest.id}`}
             className="bg-[#fc9403] hover:bg-[#db8102] text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 hover:scale-105"
           >
-            Voir plus
+            {page.cardViewMore}
           </Link>
         </div>
       </div>

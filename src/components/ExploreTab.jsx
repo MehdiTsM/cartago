@@ -15,6 +15,11 @@ const COLLECTION_NAME = "explore";
 
 const TAGS = ["Patrimoine UNESCO", "Incontournable", "Ruines romaines", "Écotourisme", "Nature", "Aventure", "Culture", "Randonnée"];
 const REGIONS = ["Désert", "Patrimoine", "Nature", "Nord", "Hauts Plateaux"];
+const LANGUAGE_OPTIONS = [
+  { code: "fr", label: "Français" },
+  { code: "en", label: "English" },
+  { code: "ar", label: "العربية" },
+];
 const WILAYAS = [
   "Adrar", "Aïn Defla", "Aïn Témouchent", "Alger", "Annaba", "Batna",
   "Béchar", "Béjaïa", "Biskra", "Blida", "Bordj Bou Arréridj", "Bouira",
@@ -48,8 +53,33 @@ const REGION_COLORS = {
 const EMPTY = {
   name: "", wilaya: "Alger", region: "Patrimoine",
   duration: "", rating: "", tag: "Incontournable",
-  description: "", image: "", gallery: [], published: true,
+  description: "", description_fr: "", description_en: "", description_ar: "",
+  image: "", gallery: [], published: true,
 };
+
+function hydrateExploreForm(place = {}) {
+  return {
+    ...EMPTY,
+    ...place,
+    description: place.description || place.description_fr || place.description_en || place.description_ar || "",
+    description_fr: place.description_fr || place.description || "",
+    description_en: place.description_en || place.description || "",
+    description_ar: place.description_ar || place.description || "",
+  };
+}
+
+function buildDescriptionPayload(form) {
+  const description_fr = form.description_fr.trim();
+  const description_en = form.description_en.trim();
+  const description_ar = form.description_ar.trim();
+
+  return {
+    description: description_fr || description_en || description_ar || form.description.trim(),
+    description_fr,
+    description_en,
+    description_ar,
+  };
+}
 
 // ─── COMPONENT ────────────────────────────────────────────────────────────────
 
@@ -92,8 +122,8 @@ export default function ExploreTab() {
     ? places
     : places.filter((p) => p.region === activeFilter);
 
-  function openAdd() { setForm(EMPTY); setDrawer({ mode: "add" }); }
-  function openEdit(place) { setForm({ ...EMPTY, ...place }); setDrawer({ mode: "edit" }); }
+  function openAdd() { setForm(hydrateExploreForm()); setDrawer({ mode: "add" }); }
+  function openEdit(place) { setForm(hydrateExploreForm(place)); setDrawer({ mode: "edit" }); }
   function closeDrawer() { setDrawer(null); }
   function field(key, val) { setForm((f) => ({ ...f, [key]: val })); }
 
@@ -119,6 +149,7 @@ export default function ExploreTab() {
       const { id, ...rest } = form;
       const payload = {
         ...rest,
+        ...buildDescriptionPayload(form),
         gallery: (rest.gallery || []).map((u) => u.trim()).filter(Boolean),
       };
 
@@ -330,15 +361,25 @@ export default function ExploreTab() {
                     </select>
                   </Field>
                 </div>
-                <Field label="Description">
-                  <textarea
-                    value={form.description}
-                    onChange={(e) => field("description", e.target.value)}
-                    placeholder="Décrivez ce lieu en 1-2 phrases…"
-                    rows={3}
-                    className={inp + " resize-none"}
-                  />
-                </Field>
+                <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4 space-y-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <label className="block text-sm font-semibold text-[#0a1e2c]">Description</label>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-[#0092A5]">FR / EN / AR</span>
+                  </div>
+                  <div className="grid gap-3 md:grid-cols-3">
+                    {LANGUAGE_OPTIONS.map(({ code, label }) => (
+                      <Field key={code} label={label}>
+                        <textarea
+                          value={form[`description_${code}`] || ""}
+                          onChange={(e) => field(`description_${code}`, e.target.value)}
+                          placeholder="Décrivez ce lieu en 1-2 phrases…"
+                          rows={4}
+                          className={inp + " resize-none"}
+                        />
+                      </Field>
+                    ))}
+                  </div>
+                </div>
               </Section>
 
               {/* Détails de la visite */}

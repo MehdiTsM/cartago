@@ -1,24 +1,32 @@
 import { useState } from "react";
 import { FaUserShield, FaLock } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase"; // make sure auth is exported from your firebase.js
 
 export default function AdminLogin() {
   const navigate = useNavigate();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
 
-    // TODO: Replace with Firebase Authentication
-    if (email === "admin@cartago.com" && password === "admin123") {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
       navigate("/admin-dashboard");
-    } else {
-      alert("Email ou mot de passe incorrect.");
+    } catch (err) {
+      setError("Email ou mot de passe incorrect.");
+    } finally {
+      setLoading(false);
     }
   };
 
+  
   return (
     <div className="min-h-screen flex items-center justify-center px-6 bg-gradient-to-br from-[#0092A5] via-[#00AFC5] to-[#fc9403]">
       <div className="w-full max-w-md">

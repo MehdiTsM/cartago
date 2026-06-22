@@ -7,6 +7,31 @@ import {
 } from "react-icons/fa";
 import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase"; // adjust this path to wherever your Firebase app/db is initialized
+import { useLanguage } from "../context/LanguageContext";
+import { useTranslation } from "react-i18next";
+import { localizeRecord } from "../utils/localizeRecord";
+
+const DESTINATION_DETAIL_CACHE_PREFIX = "cartago:destination-detail-cache:";
+
+function readDestinationCache(id, language) {
+  try {
+    const raw = localStorage.getItem(`${DESTINATION_DETAIL_CACHE_PREFIX}${language}:${id}`);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeDestinationCache(id, language, payload) {
+  try {
+    localStorage.setItem(
+      `${DESTINATION_DETAIL_CACHE_PREFIX}${language}:${id}`,
+      JSON.stringify(payload),
+    );
+  } catch {
+    // Ignore storage failures on private mode / low-storage browsers.
+  }
+}
 
 const tagColors = {
   "Coup de cœur": "bg-[#F1290E] text-white",
@@ -24,17 +49,29 @@ const tagColors = {
 export default function DestinationDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { language } = useLanguage();
+  const { t } = useTranslation();
+  const page = t("destinationDetails", { returnObjects: true });
 
-  const [dest, setDest] = useState(null);
-  const [others, setOthers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [dest, setDest] = useState(() => readDestinationCache(id, language)?.dest || null);
+  const [others, setOthers] = useState(() => readDestinationCache(id, language)?.others || []);
+  const [loading, setLoading] = useState(() => !readDestinationCache(id, language)?.dest);
   const [notFound, setNotFound] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchDestination = async () => {
-      try {
+      const cached = readDestinationCache(id, language);
+
+      if (cached?.dest) {
+        setDest(cached.dest);
+        setOthers(cached.others || []);
+        setLoading(false);
+      } else {
         setLoading(true);
+      }
+
+      try {
         setNotFound(false);
         setError(null);
 
@@ -48,20 +85,26 @@ export default function DestinationDetails() {
           return;
         }
 
-        const current = { ...snap.data(), id: snap.id };
+        const current = { ...localizeRecord(snap.data(), language), id: snap.id };
         setDest(current);
 
         // Pull a few other destinations for the "Découvrir aussi" section
         const allSnap = await getDocs(collection(db, "destinations"));
         const otherDocs = allSnap.docs
-          .map((d) => ({ ...d.data(), id: d.id }))
+          .map((d) => ({ ...localizeRecord(d.data(), language), id: d.id }))
           .filter((d) => d.id !== current.id && d.published !== false)
           .slice(0, 3);
 
         setOthers(otherDocs);
+        writeDestinationCache(id, language, {
+          dest: current,
+          others: otherDocs,
+        });
       } catch (err) {
         console.error("Error fetching destination:", err);
-        setError("Impossible de charger cette destination pour le moment.");
+        if (!cached?.dest) {
+          setError("Impossible de charger cette destination pour le moment.");
+        }
       } finally {
         setLoading(false);
       }
@@ -69,13 +112,13 @@ export default function DestinationDetails() {
 
     fetchDestination();
     window.scrollTo(0, 0);
-  }, [id]);
+  }, [id, language]);
 
-  if (loading) {
+  if (loading && !dest) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4">
         <div className="w-10 h-10 border-4 border-[#0092A5] border-t-transparent rounded-full animate-spin" />
-        <p className="text-gray-500">Chargement…</p>
+        <p className="text-gray-500">{t("common.loadingDots")}</p>
       </div>
     );
   }
@@ -93,17 +136,13 @@ export default function DestinationDetails() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center text-center px-6">
         <p className="text-6xl mb-4">🗺️</p>
-        <h1 className="text-2xl font-bold text-gray-800">
-          Destination introuvable
-        </h1>
-        <p className="text-gray-500 mt-2 mb-6">
-          Cette destination n'existe pas ou a été supprimée.
-        </p>
+        <h1 className="text-2xl font-bold text-gray-800">{page.notFoundTitle}</h1>
+        <p className="text-gray-500 mt-2 mb-6">{page.notFoundText}</p>
         <Link
           to="/destinations"
           className="bg-[#0092A5] text-white px-6 py-3 rounded-full font-semibold"
         >
-          Voir toutes les destinations
+          {page.notFoundCta}
         </Link>
       </div>
     );
@@ -114,20 +153,20 @@ export default function DestinationDetails() {
   return (
     <>
       {/* ── HERO ────────────────────────────────────────────────── */}
-      <section className="relative h-[70vh] min-h-[500px] overflow-hidden">
+      <section className="relative h-[70vh] min-h-125 overflow-hidden">
         <img
           src={heroImage}
           alt={dest.name}
           className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/20" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-black/20" />
 
         {/* Back button */}
         <button
           onClick={() => navigate(-1)}
           className="absolute top-8 left-6 lg:left-12 z-10 flex items-center gap-2 bg-white/15 backdrop-blur-md border border-white/20 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-white/25 transition"
         >
-          <FaArrowLeft className="text-xs" /> Retour
+          <FaArrowLeft className="text-xs" /> {page.back}
         </button>
 
         <div className="absolute bottom-0 left-0 right-0 z-10 max-w-7xl mx-auto px-6 lg:px-12 pb-12">
@@ -149,7 +188,7 @@ export default function DestinationDetails() {
               <span className="font-bold text-white">{dest.rating}</span>
             </span>
             <span className="flex items-center gap-1.5">
-              <FaClock /> {dest.duration} jours
+              <FaClock /> {dest.duration} {page.daysSuffix}
             </span>
             <span className="flex items-center gap-1.5">
               <FaUsers /> {dest.groupSize} personnes
@@ -167,18 +206,18 @@ export default function DestinationDetails() {
 
             {/* Description */}
             <div>
-              <EyebrowLabel>À propos</EyebrowLabel>
+              <EyebrowLabel>{page.about}</EyebrowLabel>
               <p className="text-gray-600 text-lg leading-relaxed">{dest.description}</p>
             </div>
 
             {/* Highlights */}
             {dest.highlights?.length > 0 && (
               <div>
-                <EyebrowLabel>Points forts</EyebrowLabel>
+                <EyebrowLabel>{page.highlights}</EyebrowLabel>
                 <div className="grid sm:grid-cols-2 gap-3">
                   {dest.highlights.map((h, i) => (
                     <div key={i} className="flex items-start gap-3 bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
-                      <span className="w-6 h-6 rounded-full bg-[#0092A5]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="w-6 h-6 rounded-full bg-[#0092A5]/10 flex items-center justify-center shrink-0 mt-0.5">
                         <FaCheck className="text-[#0092A5] text-[10px]" />
                       </span>
                       <span className="text-sm text-gray-700 font-medium">{h}</span>
@@ -191,7 +230,7 @@ export default function DestinationDetails() {
             {/* Gallery */}
             {dest.gallery?.length > 0 && (
               <div>
-                <EyebrowLabel>Galerie</EyebrowLabel>
+                <EyebrowLabel>{page.gallery}</EyebrowLabel>
                 <div className="grid grid-cols-3 gap-3">
                   {dest.gallery.map((src, i) => (
                     <div key={i} className="rounded-2xl overflow-hidden h-40 bg-gray-100">
@@ -205,11 +244,11 @@ export default function DestinationDetails() {
             {/* Itinerary */}
             {dest.itinerary?.length > 0 && (
               <div>
-                <EyebrowLabel>Programme jour par jour</EyebrowLabel>
+                <EyebrowLabel>{page.itinerary}</EyebrowLabel>
                 <div className="space-y-3">
                   {dest.itinerary.map((item, i) => (
                     <div key={i} className="flex gap-4 bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-[#0092A5]/10 flex items-center justify-center">
+                      <div className="shrink-0 w-10 h-10 rounded-xl bg-[#0092A5]/10 flex items-center justify-center">
                         <span className="text-xs font-bold text-[#0092A5]">J{item.day}</span>
                       </div>
                       <div>
@@ -225,11 +264,11 @@ export default function DestinationDetails() {
             {/* Included */}
             {dest.included?.length > 0 && (
               <div>
-                <EyebrowLabel>Inclus</EyebrowLabel>
+                <EyebrowLabel>{page.included}</EyebrowLabel>
                 <div className="space-y-2.5">
                   {dest.included.map((item, i) => (
                     <div key={i} className="flex items-start gap-3">
-                      <span className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 mt-0.5">
                         <FaCheck className="text-emerald-600 text-[9px]" />
                       </span>
                       <span className="text-sm text-gray-600">{item}</span>
@@ -242,29 +281,29 @@ export default function DestinationDetails() {
           </div>
 
           {/* ── STICKY SIDEBAR ─────────────────────────────────────── */}
-          <div className="lg:w-80 xl:w-96 flex-shrink-0">
+          <div className="lg:w-80 xl:w-96 shrink-0">
             <div className="sticky top-8">
               <div className="bg-white rounded-[28px] border border-gray-100 shadow-xl p-7">
 
                 <div className="space-y-3 text-sm text-gray-600">
                   <div className="flex items-center gap-3">
-                    <FaClock className="text-[#0092A5] flex-shrink-0" />
+                    <FaClock className="text-[#0092A5] shrink-0" />
                     <span>{dest.duration} jours</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <FaUsers className="text-[#0092A5] flex-shrink-0" />
+                    <FaUsers className="text-[#0092A5] shrink-0" />
                     <span>Groupe : {dest.groupSize} personnes</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <FaHotel className="text-[#0092A5] flex-shrink-0" />
+                    <FaHotel className="text-[#0092A5] shrink-0" />
                     <span>{dest.hotel}</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <FaPlane className="text-[#0092A5] flex-shrink-0" />
+                    <FaPlane className="text-[#0092A5] shrink-0" />
                     <span>Vol depuis Alger</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <FaShieldAlt className="text-[#0092A5] flex-shrink-0" />
+                    <FaShieldAlt className="text-[#0092A5] shrink-0" />
                     <span>Assurance annulation incluse</span>
                   </div>
                 </div>
@@ -274,19 +313,19 @@ export default function DestinationDetails() {
                     to="/contact"
                     className="w-full block text-center bg-[#fc9403] hover:bg-[#e08400] text-white py-4 rounded-2xl font-bold text-base transition-all hover:scale-[1.02] shadow-md shadow-[#fc9403]/30"
                   >
-                    Réserver ce voyage
+                    {page.book}
                   </Link>
                   <a
                     href="tel:+213000000000"
                     className="w-full flex items-center justify-center gap-2 border border-gray-200 hover:border-[#0092A5] hover:text-[#0092A5] text-gray-600 py-3.5 rounded-2xl font-semibold text-sm transition-all"
                   >
-                    <FaPhone className="text-xs" /> Appeler un conseiller
+                    <FaPhone className="text-xs" /> {page.callAdvisor}
                   </a>
                 </div>
 
                 <div className="mt-5 flex items-center gap-2 text-xs text-gray-400">
                   <FaShieldAlt className="text-emerald-500" />
-                  Paiement sécurisé · Annulation flexible
+                  {page.securePayment}
                 </div>
               </div>
             </div>
@@ -312,10 +351,10 @@ export default function DestinationDetails() {
           <div className="max-w-7xl mx-auto px-6 lg:px-12">
             <div className="mb-10">
               <span className="text-[#fc9403] text-sm font-bold uppercase tracking-widest">
-                Découvrir aussi
+                {page.discoverAlso}
               </span>
               <h2 className="text-3xl font-extrabold mt-1" style={{ fontFamily: "Montserrat, sans-serif" }}>
-                Autres destinations
+                {page.otherDestinations}
               </h2>
             </div>
 
@@ -346,7 +385,7 @@ export default function DestinationDetails() {
                         <FaStar className="text-yellow-400" /> {d.rating}
                       </span>
                       <span className="flex items-center gap-1 text-xs text-gray-400">
-                        <FaClock className="text-[#0092A5] text-[10px]" /> {d.duration} jours
+                        <FaClock className="text-[#0092A5] text-[10px]" /> {d.duration} {page.daysSuffix}
                       </span>
                     </div>
                   </div>

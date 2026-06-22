@@ -83,6 +83,235 @@ const resources = {
         ctaText:
           "Que vous rêviez d'une escapade en Europe, d'un séjour à Dubaï ou d'un voyage sur mesure, notre équipe est là pour vous accompagner.",
       },
+      medical: {
+        heroBadge: "Tourisme Médical",
+        heroTitle: "SOIGNEZ-VOUS À L'ÉTRANGER,",
+        heroTitleAccent: "EN TOUTE CONFIANCE.",
+        heroSubtitle:
+          "Cartago vous accompagne de A à Z dans votre parcours de soin à l'international — dossier médical, vol, hébergement, clinique partenaire et suivi post-opératoire. Vous vous concentrez sur votre santé, nous gérons le reste.",
+        heroCtaContact: "Contact",
+        heroCtaDestinations: "Nos Destinations",
+        whyTitlePrefix: "Votre Santé Mérite le",
+        whyTitleAccent: "Meilleur",
+        whyText1:
+          "Le tourisme médical permet d'accéder à des soins de très haute qualité dans des pays où l'expertise médicale est reconnue mondialement, pour des coûts souvent 2 à 5 fois inférieurs à ceux pratiqués en Europe ou en Algérie.",
+        whyText2:
+          "Chez Cartago, nous sélectionnons rigoureusement nos cliniques partenaires — accréditations internationales, chirurgiens formés à l'étranger, normes d'hygiène irréprochables. Vous ne voyagez jamais seul dans votre démarche.",
+        whyBenefits: [
+          "Cliniques certifiées JCI ou équivalent international",
+          "Coordination médicale en français tout au long du séjour",
+          "Devis transparent incluant tous les frais annexes",
+          "Suivi post-opératoire assuré à votre retour",
+          "Assurance voyage médicale spécifique incluse",
+        ],
+        whyImageAlt: "Clinique médicale moderne",
+        specialtiesTitle: "Nos Spécialités",
+        specialtiesText:
+          "Des disciplines médicales soigneusement sélectionnées, dans des établissements de référence à travers le monde.",
+        specialties: {
+          dental: {
+            title: "Dentisterie",
+            text: "Implants, facettes, soins esthétiques et réhabilitation complète du sourire.",
+          },
+          eye: {
+            title: "Ophtalmologie",
+            text: "Chirurgie réfractive, cataracte et traitements de pointe pour la vision.",
+          },
+          heart: {
+            title: "Cardiologie",
+            text: "Bilan, prise en charge et intervention dans des centres spécialisés.",
+          },
+          weight: {
+            title: "Bariatrique",
+            text: "Solutions médicales pour la gestion durable du poids et du métabolisme.",
+          },
+          bone: {
+            title: "Orthopédie",
+            text: "Prothèses, traumatologie et rééducation avec des équipes expertes.",
+          },
+          beauty: {
+            title: "Esthétique",
+            text: "Chirurgie plastique et soins de beauté réalisés dans un cadre sécurisé.",
+          },
+        },
+        stepsTitle: "Comment Ça Marche ?",
+        stepsText:
+          "Un parcours structuré, humain et transparent de la première consultation jusqu'au retour à domicile.",
+        steps: {
+          one: {
+            title: "Premier contact",
+            text: "Vous nous décrivez votre besoin et nous analysons votre dossier sans engagement.",
+          },
+          two: {
+            title: "Avis médical",
+            text: "Nous orientons votre demande vers la clinique et le spécialiste les plus adaptés.",
+          },
+          three: {
+            title: "Planification",
+            text: "Nous organisons le vol, l'hébergement, les transferts et le calendrier de soins.",
+          },
+          four: {
+            title: "Séjour encadré",
+            text: "Un coordinateur dédié vous accompagne sur place tout au long du séjour.",
+          },
+          five: {
+            title: "Retour et suivi",
+            text: "Nous assurons le suivi post-opératoire et restons disponibles à votre retour.",
+          },
+        },
+        includedTitle: "Ce Qui Est Inclus",
+        includedText:
+          "Un forfait tout compris pour que vous n'ayez à penser qu'à votre rétablissement.",
+        includedServices: {
+          coordination: {
+            title: "Coordination Médicale",
+            text: "Un coordinateur dédié gère votre dossier, traduit vos documents et reste disponible 24h/24 durant votre séjour.",
+          },
+          travel: {
+            title: "Vols & Transferts",
+            text: "Billets d'avion, navettes aéroport-clinique et déplacements locaux organisés et confirmés avant votre départ.",
+          },
+          accommodation: {
+            title: "Hébergement",
+            text: "Hôtels sélectionnés à proximité des cliniques, adaptés à la convalescence, avec chambre individuelle et petits-déjeuners.",
+          },
+          clinical: {
+            title: "Prise en Charge Clinique",
+            text: "Rendez-vous médicaux, analyses pré-opératoires, intervention, chambre d'hospitalisation et soins infirmiers post-op.",
+          },
+        },
+        ctaImageAlt: "Équipe médicale en consultation",
+        ctaBadge: "Première étape gratuite",
+        ctaTitle: "Parlez-nous de votre Projet de Soin",
+        ctaText:
+          "Envoyez-nous vos documents médicaux ou décrivez simplement votre besoin. Notre équipe vous répond sous 24 h avec une première orientation gratuite et sans engagement.",
+        ctaContact: "Consultation Gratuite",
+        ctaDestinations: "Voir nos Destinations",
+      },
+      destinationsPage: {
+        heroTitle: "VOS PROCHAINES",
+        heroTitleAccent: "AVENTURES",
+        heroTitleEnd: "VOUS ATTENDENT",
+        heroText:
+          "Plus de 50 destinations soigneusement sélectionnées pour vous offrir des voyages qui marquent à jamais.",
+        searchPlaceholder: "Rechercher une destination, un pays…",
+        stats: [
+          { value: "50+", label: "Destinations" },
+          { value: "10 000+", label: "Voyageurs satisfaits" },
+          { value: "4.9 / 5", label: "Note moyenne" },
+        ],
+        filters: ["Tous", "Europe", "Asie", "Afrique", "Moyen-Orient", "Amériques"],
+        loading: "Chargement des destinations…",
+        error: "Impossible de charger les destinations pour le moment.",
+        retry: "Vérifiez votre connexion ou réessayez plus tard.",
+        emptyTitle: "Aucune destination trouvée",
+        emptyText: "Essayez un autre terme ou explorez toutes nos destinations.",
+        resetFilters: "Réinitialiser les filtres",
+        resultsOne: "destination trouvée",
+        resultsMany: "destinations trouvées",
+        features: {
+          flights: {
+            title: "Vols inclus",
+            text: "Tous nos forfaits incluent les billets d'avion aller-retour depuis l'Algérie.",
+          },
+          hotels: {
+            title: "Hôtels sélectionnés",
+            text: "Des établissements testés et validés par notre équipe sur le terrain.",
+          },
+          trust: {
+            title: "Voyagez en confiance",
+            text: "Assurance annulation, assistance 24h/24 et paiement sécurisé.",
+          },
+        },
+        ctaBadge: "Votre voyage sur mesure",
+        ctaTitlePrefix: "Vous ne trouvez pas",
+        ctaTitleAccent: "ce que vous cherchez ?",
+        ctaText:
+          "Nos conseillers vous concoctent un voyage entièrement personnalisé selon vos envies, votre budget et vos dates.",
+        ctaButton: "Demander un devis gratuit",
+        ctaCall: "Appeler un conseiller",
+        cardDaysSuffix: "jours",
+        cardViewMore: "Voir plus",
+      },
+      destinationDetails: {
+        back: "Retour",
+        notFoundTitle: "Destination introuvable",
+        notFoundText: "Cette destination n'existe pas ou a été supprimée.",
+        notFoundCta: "Voir toutes les destinations",
+        about: "À propos",
+        highlights: "Points forts",
+        gallery: "Galerie",
+        itinerary: "Programme jour par jour",
+        included: "Inclus",
+        daysSuffix: "jours",
+        groupPrefix: "Groupe :",
+        departFromAlgiers: "Vol depuis Alger",
+        cancelInsurance: "Assurance annulation incluse",
+        book: "Réserver ce voyage",
+        callAdvisor: "Appeler un conseiller",
+        securePayment: "Paiement sécurisé · Annulation flexible",
+        discoverAlso: "Découvrir aussi",
+        otherDestinations: "Autres destinations",
+      },
+      exploreDz: {
+        heroTitle: "EXPLORER",
+        heroTitleAccent: "L'ALGÉRIE",
+        heroText:
+          "Du Sahara aux côtes méditerranéennes, des massifs kabyles aux plaines du Tell — l'Algérie est le plus grand pays d'Afrique et l'un des moins explorés.",
+        searchPlaceholder: "Rechercher un lieu, une wilaya…",
+        stats: [
+          { value: "48", label: "Wilayas à explorer" },
+          { value: "3", label: "Sites UNESCO" },
+          { value: "2 381 741 km²", label: "Le plus grand pays d'Afrique" },
+        ],
+        filters: ["Tous", "Désert", "Patrimoine", "Nature", "Nord"],
+        loading: "Chargement des lieux…",
+        emptyTitle: "Aucun lieu trouvé",
+        emptyText: "Essayez un autre terme ou explorez toutes les régions.",
+        resetFilters: "Réinitialiser les filtres",
+        resultsOne: "lieu trouvé",
+        resultsMany: "lieux trouvés",
+        regionsTitle: "L'Algérie par ses régions",
+        regions: [
+          {
+            title: "Grand Sud",
+            text: "Erg, regs, oasis et volcans : le Sahara algérien couvre plus de 2 millions de km². Hoggar, Tassili, Erg Occidental.",
+          },
+          {
+            title: "Hauts Plateaux & Tell",
+            text: "Timgad, Djémila, Tipasa, Cirta — un arc de cités romaines classées UNESCO sur fond de montagnes vertes.",
+          },
+          {
+            title: "Nord & Méditerranée",
+            text: "Côtes kabyles, parcs nationaux, forêts de pins et ports de pêche où la mer est encore sauvage.",
+          },
+        ],
+        ctaBadge: "Voyage sur mesure en Algérie",
+        ctaTitlePrefix: "Prêt à découvrir",
+        ctaTitleAccent: "votre propre pays ?",
+        ctaText:
+          "Nos guides locaux vous emmènent là où les agences ordinaires ne vont pas. Circuits privés, bivouacs sahariens, rencontres authentiques.",
+        ctaButton: "Planifier mon circuit",
+        ctaCall: "Appeler un conseiller",
+        cardButton: "Voir ce lieu",
+        cardRating: "Note",
+        cardDurationSuffix: "jours",
+      },
+      exploreDetails: {
+        loading: "Chargement de la destination...",
+        notFoundTitle: "Destination introuvable",
+        notFoundText: "Retour",
+        gallery: "Galerie",
+        bookingTitle: "Envie de visiter ?",
+        bookingText:
+          "Organisez votre voyage avec notre équipe et découvrez cette destination avec un circuit adapté.",
+        bookingButton: "Réserver ce voyage",
+        bookingCall: "Appeler un conseiller",
+        back: "Retour",
+        daysSuffix: "jours",
+        heroDurationSuffix: "jours",
+        heroRatingSuffix: "/5",
+      },
 transport: {
   heroTitle: "Transport",
   heroTitleAccent: "Sur Mesure",
@@ -361,6 +590,235 @@ team: {
         ctaText:
           "Whether you dream of a European escape, a stay in Dubai, or a tailor-made trip, our team is here to help.",
       },
+      medical: {
+        heroBadge: "Medical Tourism",
+        heroTitle: "GET TREATED ABROAD,",
+        heroTitleAccent: "WITH COMPLETE CONFIDENCE.",
+        heroSubtitle:
+          "Cartago supports you end to end in your international care journey — medical file, flights, accommodation, partner clinic and post-operative follow-up. You focus on your health, we handle the rest.",
+        heroCtaContact: "Contact",
+        heroCtaDestinations: "Our Destinations",
+        whyTitlePrefix: "Your Health Deserves the",
+        whyTitleAccent: "Best",
+        whyText1:
+          "Medical tourism gives access to top-quality care in countries where medical expertise is internationally recognized, often at costs 2 to 5 times lower than in Europe or Algeria.",
+        whyText2:
+          "At Cartago, we carefully select our partner clinics — international accreditations, doctors trained abroad, and impeccable hygiene standards. You never travel alone in your process.",
+        whyBenefits: [
+          "JCI-certified clinics or equivalent international standards",
+          "French-speaking medical coordination throughout the stay",
+          "Transparent quotes including all additional fees",
+          "Post-operative follow-up after you return home",
+          "Dedicated medical travel insurance included",
+        ],
+        whyImageAlt: "Modern medical clinic",
+        specialtiesTitle: "Our Specialties",
+        specialtiesText:
+          "Carefully selected medical disciplines in leading facilities around the world.",
+        specialties: {
+          dental: {
+            title: "Dentistry",
+            text: "Implants, veneers, cosmetic care and complete smile restoration.",
+          },
+          eye: {
+            title: "Ophthalmology",
+            text: "Refractive surgery, cataract care and advanced vision treatments.",
+          },
+          heart: {
+            title: "Cardiology",
+            text: "Diagnostics, treatment and interventions in specialized centers.",
+          },
+          weight: {
+            title: "Bariatric Care",
+            text: "Medical solutions for long-term weight and metabolic management.",
+          },
+          bone: {
+            title: "Orthopedics",
+            text: "Prosthetics, trauma care and rehabilitation with expert teams.",
+          },
+          beauty: {
+            title: "Aesthetics",
+            text: "Plastic surgery and beauty treatments delivered in a safe setting.",
+          },
+        },
+        stepsTitle: "How It Works?",
+        stepsText:
+          "A structured, human and transparent journey from the first consultation to your return home.",
+        steps: {
+          one: {
+            title: "First contact",
+            text: "You describe your needs and we review your file with no commitment.",
+          },
+          two: {
+            title: "Medical review",
+            text: "We direct your request to the most suitable clinic and specialist.",
+          },
+          three: {
+            title: "Planning",
+            text: "We arrange flights, accommodation, transfers and your care schedule.",
+          },
+          four: {
+            title: "Guided stay",
+            text: "A dedicated coordinator supports you on site throughout your stay.",
+          },
+          five: {
+            title: "Return and follow-up",
+            text: "We ensure post-operative follow-up and remain available after you return.",
+          },
+        },
+        includedTitle: "What Is Included",
+        includedText:
+          "An all-inclusive package so you can focus only on your recovery.",
+        includedServices: {
+          coordination: {
+            title: "Medical Coordination",
+            text: "A dedicated coordinator manages your file, translates your documents and stays available 24/7 during your stay.",
+          },
+          travel: {
+            title: "Flights & Transfers",
+            text: "Flights, airport-clinic shuttles and local transfers arranged and confirmed before departure.",
+          },
+          accommodation: {
+            title: "Accommodation",
+            text: "Hotels selected near the clinics, adapted for recovery, with private rooms and breakfast.",
+          },
+          clinical: {
+            title: "Clinical Care",
+            text: "Medical appointments, pre-op tests, surgery, hospital room and post-op nursing care.",
+          },
+        },
+        ctaImageAlt: "Medical team in consultation",
+        ctaBadge: "Free first step",
+        ctaTitle: "Tell us about your care project",
+        ctaText:
+          "Send us your medical documents or simply describe your needs. Our team replies within 24 hours with a free, no-obligation first assessment.",
+        ctaContact: "Free Consultation",
+        ctaDestinations: "See Destinations",
+      },
+      destinationsPage: {
+        heroTitle: "YOUR NEXT",
+        heroTitleAccent: "ADVENTURES",
+        heroTitleEnd: "ARE WAITING",
+        heroText:
+          "More than 50 carefully selected destinations to give you journeys that stay with you forever.",
+        searchPlaceholder: "Search a destination, a country…",
+        stats: [
+          { value: "50+", label: "Destinations" },
+          { value: "10,000+", label: "Happy travellers" },
+          { value: "4.9 / 5", label: "Average rating" },
+        ],
+        filters: ["All", "Europe", "Asia", "Africa", "Middle East", "Americas"],
+        loading: "Loading destinations…",
+        error: "We can't load the destinations right now.",
+        retry: "Check your connection or try again later.",
+        emptyTitle: "No destination found",
+        emptyText: "Try another term or explore all our destinations.",
+        resetFilters: "Reset filters",
+        resultsOne: "destination found",
+        resultsMany: "destinations found",
+        features: {
+          flights: {
+            title: "Flights included",
+            text: "All our packages include round-trip flights from Algeria.",
+          },
+          hotels: {
+            title: "Selected hotels",
+            text: "Properties tested and approved by our on-the-ground team.",
+          },
+          trust: {
+            title: "Travel with confidence",
+            text: "Cancellation insurance, 24/7 assistance and secure payment.",
+          },
+        },
+        ctaBadge: "Your tailor-made trip",
+        ctaTitlePrefix: "Can't find",
+        ctaTitleAccent: "what you're looking for?",
+        ctaText:
+          "Our advisors build a fully personalized trip based on your wishes, budget and dates.",
+        ctaButton: "Request a free quote",
+        ctaCall: "Call an advisor",
+        cardDaysSuffix: "days",
+        cardViewMore: "View more",
+      },
+      destinationDetails: {
+        back: "Back",
+        notFoundTitle: "Destination not found",
+        notFoundText: "This destination doesn't exist or has been removed.",
+        notFoundCta: "See all destinations",
+        about: "About",
+        highlights: "Highlights",
+        gallery: "Gallery",
+        itinerary: "Day-by-day itinerary",
+        included: "Included",
+        daysSuffix: "days",
+        groupPrefix: "Group:",
+        departFromAlgiers: "Flight from Algiers",
+        cancelInsurance: "Cancellation insurance included",
+        book: "Book this trip",
+        callAdvisor: "Call an advisor",
+        securePayment: "Secure payment · Flexible cancellation",
+        discoverAlso: "Discover also",
+        otherDestinations: "Other destinations",
+      },
+      exploreDz: {
+        heroTitle: "EXPLORE",
+        heroTitleAccent: "ALGERIA",
+        heroText:
+          "From the Sahara to the Mediterranean coast, from the Kabylie mountains to the Tell plains — Algeria is Africa's largest country and one of its least explored.",
+        searchPlaceholder: "Search a place, a wilaya…",
+        stats: [
+          { value: "48", label: "Wilayas to explore" },
+          { value: "3", label: "UNESCO sites" },
+          { value: "2,381,741 km²", label: "Africa's largest country" },
+        ],
+        filters: ["All", "Desert", "Heritage", "Nature", "North"],
+        loading: "Loading places…",
+        emptyTitle: "No place found",
+        emptyText: "Try another term or explore all regions.",
+        resetFilters: "Reset filters",
+        resultsOne: "place found",
+        resultsMany: "places found",
+        regionsTitle: "Algeria by region",
+        regions: [
+          {
+            title: "Great South",
+            text: "Ergs, regs, oases and volcanoes: the Algerian Sahara spans more than 2 million km². Hoggar, Tassili, Western Erg.",
+          },
+          {
+            title: "High Plateaus & Tell",
+            text: "Timgad, Djemila, Tipasa, Cirta — an arc of UNESCO-listed Roman cities against green mountains.",
+          },
+          {
+            title: "North & Mediterranean",
+            text: "Kabyle coasts, national parks, pine forests and fishing ports where the sea still feels wild.",
+          },
+        ],
+        ctaBadge: "Tailor-made travel in Algeria",
+        ctaTitlePrefix: "Ready to discover",
+        ctaTitleAccent: "your own country?",
+        ctaText:
+          "Our local guides take you where ordinary agencies don't go. Private circuits, desert bivouacs, authentic encounters.",
+        ctaButton: "Plan my circuit",
+        ctaCall: "Call an advisor",
+        cardButton: "View this place",
+        cardRating: "Rating",
+        cardDurationSuffix: "days",
+      },
+      exploreDetails: {
+        loading: "Loading destination...",
+        notFoundTitle: "Destination not found",
+        notFoundText: "Back",
+        gallery: "Gallery",
+        bookingTitle: "Want to visit?",
+        bookingText:
+          "Plan your trip with our team and discover this destination with a suitable circuit.",
+        bookingButton: "Book this trip",
+        bookingCall: "Call an advisor",
+        back: "Back",
+        daysSuffix: "days",
+        heroDurationSuffix: "days",
+        heroRatingSuffix: "/5",
+      },
       transport: {
         heroTitle: "Transport",
         heroTitleAccent: "Tailored for You",
@@ -637,6 +1095,235 @@ team: {
         ctaTitle: "هل أنت مستعد لاستكشاف العالم؟",
         ctaText:
           "سواء كنت تحلم بإجازة في أوروبا أو إقامة في دبي أو رحلة مخصصة، فريقنا هنا لمساعدتك.",
+      },
+      medical: {
+        heroBadge: "السياحة العلاجية",
+        heroTitle: "تلَقَّ العلاج في الخارج،",
+        heroTitleAccent: "بثقة كاملة.",
+        heroSubtitle:
+          "ترافقك Cartago من البداية إلى النهاية في رحلة العلاج الدولية — الملف الطبي، التذاكر، الإقامة، العيادة الشريكة والمتابعة بعد العملية. أنت تركز على صحتك، ونحن نتولى الباقي.",
+        heroCtaContact: "اتصل بنا",
+        heroCtaDestinations: "وجهاتنا",
+        whyTitlePrefix: "صحتك تستحق",
+        whyTitleAccent: "الأفضل",
+        whyText1:
+          "تتيح السياحة العلاجية الوصول إلى رعاية عالية الجودة في دول تتمتع بخبرة طبية معترف بها دوليًا، وبكلفة أقل غالبًا من أوروبا أو الجزائر بما يصل إلى 2 إلى 5 مرات.",
+        whyText2:
+          "في Cartago نختار عياداتنا الشريكة بعناية — اعتماد دولي، أطباء تلقوا تدريبهم في الخارج، ومعايير نظافة صارمة. أنت لا تسافر وحدك أبدًا في هذه الرحلة.",
+        whyBenefits: [
+          "عيادات معتمدة JCI أو ما يعادلها دوليًا",
+          "تنسيق طبي باللغة الفرنسية طوال فترة الإقامة",
+          "عروض شفافة تشمل جميع التكاليف الإضافية",
+          "متابعة بعد العملية عند عودتك",
+          "تأمين سفر طبي مخصص مشمول",
+        ],
+        whyImageAlt: "عيادة طبية حديثة",
+        specialtiesTitle: "تخصصاتنا الطبية",
+        specialtiesText:
+          "تخصصات طبية مختارة بعناية داخل مؤسسات مرجعية حول العالم.",
+        specialties: {
+          dental: {
+            title: "طب الأسنان",
+            text: "زرعات، قشور تجميلية، وعلاجات متقدمة لاستعادة الابتسامة.",
+          },
+          eye: {
+            title: "طب العيون",
+            text: "جراحة تصحيح النظر، علاج الساد، وعلاجات متقدمة للرؤية.",
+          },
+          heart: {
+            title: "أمراض القلب",
+            text: "تشخيص وعلاج وتدخلات في مراكز متخصصة.",
+          },
+          weight: {
+            title: "الجراحة السُّمنة",
+            text: "حلول طبية لإدارة الوزن والتمثيل الغذائي على المدى الطويل.",
+          },
+          bone: {
+            title: "جراحة العظام",
+            text: "تعويضات، علاج الإصابات وإعادة التأهيل مع فرق خبيرة.",
+          },
+          beauty: {
+            title: "التجميل",
+            text: "جراحات تجميل وعلاجات جمال ضمن بيئة آمنة.",
+          },
+        },
+        stepsTitle: "كيف تعمل الخدمة؟",
+        stepsText:
+          "رحلة منظمة وإنسانية وشفافة من أول استشارة حتى العودة إلى المنزل.",
+        steps: {
+          one: {
+            title: "التواصل الأول",
+            text: "تصف لنا احتياجك ونراجع ملفك بدون أي التزام.",
+          },
+          two: {
+            title: "تقييم طبي",
+            text: "نوجّه طلبك إلى العيادة والطبيب الأنسب لحالتك.",
+          },
+          three: {
+            title: "التخطيط",
+            text: "ننظم الرحلة والإقامة والتنقلات وجدول الرعاية الطبية.",
+          },
+          four: {
+            title: "إقامة بإشراف",
+            text: "يرافقك منسق مخصص في المكان طوال فترة الإقامة.",
+          },
+          five: {
+            title: "العودة والمتابعة",
+            text: "نؤمّن المتابعة بعد العملية ونبقى متاحين بعد عودتك.",
+          },
+        },
+        includedTitle: "ما الذي يشمله العرض",
+        includedText:
+          "باقة شاملة حتى تركز فقط على التعافي.",
+        includedServices: {
+          coordination: {
+            title: "التنسيق الطبي",
+            text: "منسق مخصص يدير ملفك، يترجم مستنداتك ويبقى متاحًا 24/7 خلال الإقامة.",
+          },
+          travel: {
+            title: "الرحلات والتنقلات",
+            text: "تذاكر الطيران، تنقلات المطار-العيادة والتنقلات المحلية منظمة ومؤكدة قبل السفر.",
+          },
+          accommodation: {
+            title: "الإقامة",
+            text: "فنادق مختارة بالقرب من العيادات ومناسبة لفترة النقاهة مع غرفة خاصة وإفطار.",
+          },
+          clinical: {
+            title: "الرعاية السريرية",
+            text: "المواعيد الطبية، الفحوصات قبل العملية، التدخل، الغرفة الطبية والتمريض بعد العملية.",
+          },
+        },
+        ctaImageAlt: "فريق طبي في استشارة",
+        ctaBadge: "الخطوة الأولى مجانية",
+        ctaTitle: "حدثنا عن مشروعك العلاجي",
+        ctaText:
+          "أرسل لنا ملفاتك الطبية أو صف احتياجك ببساطة. يرد فريقنا خلال 24 ساعة مع توجيه أولي مجاني ودون التزام.",
+        ctaContact: "استشارة مجانية",
+        ctaDestinations: "عرض الوجهات",
+      },
+      destinationsPage: {
+        heroTitle: "وجهاتك",
+        heroTitleAccent: "القادمة",
+        heroTitleEnd: "تنتظرك",
+        heroText:
+          "أكثر من 50 وجهة مختارة بعناية لتمنحك رحلات تبقى في الذاكرة.",
+        searchPlaceholder: "ابحث عن وجهة أو بلد…",
+        stats: [
+          { value: "50+", label: "وجهة" },
+          { value: "10,000+", label: "مسافر سعيد" },
+          { value: "4.9 / 5", label: "التقييم المتوسط" },
+        ],
+        filters: ["الكل", "أوروبا", "آسيا", "إفريقيا", "الشرق الأوسط", "الأمريكتان"],
+        loading: "جارٍ تحميل الوجهات…",
+        error: "لا يمكننا تحميل الوجهات الآن.",
+        retry: "تحقق من اتصالك أو أعد المحاولة لاحقًا.",
+        emptyTitle: "لم يتم العثور على وجهة",
+        emptyText: "جرّب مصطلحًا آخر أو استكشف جميع وجهاتنا.",
+        resetFilters: "إعادة ضبط المرشحات",
+        resultsOne: "وجهة واحدة",
+        resultsMany: "وجهات",
+        features: {
+          flights: {
+            title: "رحلات مشمولة",
+            text: "جميع باقاتنا تشمل تذاكر الطيران ذهابًا وإيابًا من الجزائر.",
+          },
+          hotels: {
+            title: "فنادق مختارة",
+            text: "فنادق مختبرة ومعتمدة من فريقنا الميداني.",
+          },
+          trust: {
+            title: "سافر بثقة",
+            text: "تأمين إلغاء، دعم على مدار الساعة، ودفع آمن.",
+          },
+        },
+        ctaBadge: "رحلتك المصممة خصيصًا",
+        ctaTitlePrefix: "ألا تجد",
+        ctaTitleAccent: "ما تبحث عنه؟",
+        ctaText:
+          "يقوم مستشارونا بإعداد رحلة مخصصة بالكامل حسب رغباتك وميزانيتك وتواريخك.",
+        ctaButton: "اطلب عرضًا مجانيًا",
+        ctaCall: "اتصل بمستشار",
+        cardDaysSuffix: "أيام",
+        cardViewMore: "عرض المزيد",
+      },
+      destinationDetails: {
+        back: "رجوع",
+        notFoundTitle: "الوجهة غير موجودة",
+        notFoundText: "هذه الوجهة غير موجودة أو تم حذفها.",
+        notFoundCta: "عرض جميع الوجهات",
+        about: "نبذة",
+        highlights: "أبرز المزايا",
+        gallery: "المعرض",
+        itinerary: "البرنامج اليومي",
+        included: "المشمول",
+        daysSuffix: "أيام",
+        groupPrefix: "المجموعة:",
+        departFromAlgiers: "رحلة من الجزائر",
+        cancelInsurance: "تأمين الإلغاء مشمول",
+        book: "احجز هذه الرحلة",
+        callAdvisor: "اتصل بمستشار",
+        securePayment: "دفع آمن · إلغاء مرن",
+        discoverAlso: "اكتشف أيضًا",
+        otherDestinations: "وجهات أخرى",
+      },
+      exploreDz: {
+        heroTitle: "اكتشف",
+        heroTitleAccent: "الجزائر",
+        heroText:
+          "من الصحراء الكبرى إلى سواحل المتوسط، ومن جبال القبائل إلى سهول التل — الجزائر أكبر بلد في إفريقيا وأقلها استكشافًا.",
+        searchPlaceholder: "ابحث عن مكان أو ولاية…",
+        stats: [
+          { value: "48", label: "ولاية للاستكشاف" },
+          { value: "3", label: "مواقع يونسكو" },
+          { value: "2,381,741 كم²", label: "أكبر بلد في إفريقيا" },
+        ],
+        filters: ["الكل", "الصحراء", "التراث", "الطبيعة", "الشمال"],
+        loading: "جارٍ تحميل الأماكن…",
+        emptyTitle: "لم يتم العثور على مكان",
+        emptyText: "جرّب مصطلحًا آخر أو استكشف جميع المناطق.",
+        resetFilters: "إعادة ضبط المرشحات",
+        resultsOne: "مكان واحد",
+        resultsMany: "أماكن",
+        regionsTitle: "الجزائر حسب المناطق",
+        regions: [
+          {
+            title: "الجنوب الكبير",
+            text: "كثبان ورُقع رملية وواحات وبراكين: تغطي الصحراء الجزائرية أكثر من مليوني كيلومتر مربع. الهقار، الطاسيلي، العرق الغربي.",
+          },
+          {
+            title: "الهضاب العليا والتل",
+            text: "تيمقاد، جميلة، تيبازة، سيرتا — قوس من المدن الرومانية المصنفة ضمن يونسكو وسط جبال خضراء.",
+          },
+          {
+            title: "الشمال والبحر المتوسط",
+            text: "سواحل القبائل، المتنزهات الوطنية، غابات الصنوبر وموانئ الصيد حيث ما يزال البحر بريًا.",
+          },
+        ],
+        ctaBadge: "رحلة مصممة في الجزائر",
+        ctaTitlePrefix: "هل أنت مستعد لاكتشاف",
+        ctaTitleAccent: "بلدك؟",
+        ctaText:
+          "يأخذك مرشدونا المحليون إلى أماكن لا تصلها الوكالات العادية. برامج خاصة، تخييم صحراوي، ولقاءات أصيلة.",
+        ctaButton: "خطط لرحلتي",
+        ctaCall: "اتصل بمستشار",
+        cardButton: "عرض هذا المكان",
+        cardRating: "التقييم",
+        cardDurationSuffix: "أيام",
+      },
+      exploreDetails: {
+        loading: "جارٍ تحميل الوجهة...",
+        notFoundTitle: "الوجهة غير موجودة",
+        notFoundText: "رجوع",
+        gallery: "المعرض",
+        bookingTitle: "هل ترغب في الزيارة؟",
+        bookingText:
+          "نظم رحلتك مع فريقنا واكتشف هذه الوجهة عبر برنامج مناسب.",
+        bookingButton: "احجز هذه الرحلة",
+        bookingCall: "اتصل بمستشار",
+        back: "رجوع",
+        daysSuffix: "أيام",
+        heroDurationSuffix: "أيام",
+        heroRatingSuffix: "/5",
       },
 transport: {
   heroTitle: "النقل",

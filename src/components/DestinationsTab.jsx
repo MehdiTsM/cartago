@@ -17,6 +17,11 @@ import {
 
 const TAGS = ["Tendance", "Luxe", "Classique", "Promotion", "Romantique", "Culture", "Exotique", "Aventure"];
 const REGIONS = ["Europe", "Asie", "Afrique", "Moyen-Orient", "Amériques"];
+const LANGUAGE_OPTIONS = [
+  { code: "fr", label: "Français" },
+  { code: "en", label: "English" },
+  { code: "ar", label: "العربية" },
+];
 
 const TAG_COLORS = {
   "Tendance":      "bg-[#0092A5]/10 text-[#0092A5]",
@@ -34,12 +39,59 @@ const EMPTY = {
   hotel: "", groupSize: "",
   duration: "", rating: "", tag: "Tendance",
   description: "", image: "",
+  name_fr: "", name_en: "", name_ar: "",
+  country_fr: "", country_en: "", country_ar: "",
+  description_fr: "", description_en: "", description_ar: "",
+  hotel_fr: "", hotel_en: "", hotel_ar: "",
   gallery: [],
   highlights: [],
   included: [],
   itinerary: [],
   published: true,
 };
+
+function hydrateDestinationForm(dest = {}) {
+  return {
+    ...EMPTY,
+    ...dest,
+    name: dest.name || dest.name_fr || dest.name_en || dest.name_ar || "",
+    country: dest.country || dest.country_fr || dest.country_en || dest.country_ar || "",
+    description:
+      dest.description || dest.description_fr || dest.description_en || dest.description_ar || "",
+    hotel: dest.hotel || dest.hotel_fr || dest.hotel_en || dest.hotel_ar || "",
+    name_fr: dest.name_fr || dest.name || "",
+    name_en: dest.name_en || dest.name || "",
+    name_ar: dest.name_ar || dest.name || "",
+    country_fr: dest.country_fr || dest.country || "",
+    country_en: dest.country_en || dest.country || "",
+    country_ar: dest.country_ar || dest.country || "",
+    description_fr: dest.description_fr || dest.description || "",
+    description_en: dest.description_en || dest.description || "",
+    description_ar: dest.description_ar || dest.description || "",
+    hotel_fr: dest.hotel_fr || dest.hotel || "",
+    hotel_en: dest.hotel_en || dest.hotel || "",
+    hotel_ar: dest.hotel_ar || dest.hotel || "",
+  };
+}
+
+function buildTranslatedPayload(form, field) {
+  const fr = form[`${field}_fr`].trim();
+  const en = form[`${field}_en`].trim();
+  const ar = form[`${field}_ar`].trim();
+
+  return {
+    [field]: fr || en || ar || form[field].trim(),
+    [`${field}_fr`]: fr,
+    [`${field}_en`]: en,
+    [`${field}_ar`]: ar,
+  };
+}
+
+function hasRequiredTranslations(form) {
+  return ["name", "country", "description"].every((field) =>
+    LANGUAGE_OPTIONS.every(({ code }) => (form[`${field}_${code}`] || "").trim())
+  );
+}
 
 // ─── COMPONENT ────────────────────────────────────────────────────────────────
 
@@ -62,6 +114,7 @@ export default function DestinationsTab() {
   const [newIncluded, setNewIncluded]     = useState("");
   const [newItinTitle, setNewItinTitle]   = useState("");
   const [newItinDesc, setNewItinDesc]     = useState("");
+  const canSave = hasRequiredTranslations(form);
 
 
 
@@ -78,9 +131,7 @@ async function fetchDestinations() {
       return {
         id: doc.id,
 
-        ...EMPTY,
-
-        ...data,
+        ...hydrateDestinationForm(data),
 
         gallery: Array.isArray(data.gallery) 
           ? data.gallery.filter(Boolean) 
@@ -108,15 +159,12 @@ async function fetchDestinations() {
   }
 }
   function openAdd() {
-    setForm(EMPTY);
+    setForm(hydrateDestinationForm());
     resetListInputs();
     setDrawer({ mode: "add" });
   }
 function openEdit(dest) {
-  setForm({
-    ...EMPTY,
-    ...dest,
-  });
+  setForm(hydrateDestinationForm(dest));
 
   resetListInputs();
   setDrawer({ mode: "edit" });
@@ -161,10 +209,15 @@ function openEdit(dest) {
   // ── save ─────────────────────────────────────────────────────
 async function save() {
 
-  if (!form.name.trim() || !form.country.trim()) return;
+  if (!canSave) return;
   const cleanedForm = {
 
     ...form,
+
+    ...buildTranslatedPayload(form, "name"),
+    ...buildTranslatedPayload(form, "country"),
+    ...buildTranslatedPayload(form, "description"),
+    ...buildTranslatedPayload(form, "hotel"),
 
     gallery: form.gallery.filter(Boolean),
 
@@ -334,36 +387,52 @@ async function doDelete(){
 
               {/* ── Infos de base ── */}
               <Section icon={<FaGlobe />} title="Infos de base">
-                <div className="grid grid-cols-2 gap-4">
-                  <Field label="Nom de la destination *">
-                    <input value={form.name} onChange={(e) => field("name", e.target.value)} placeholder="ex. Istanbul" className={inp} />
-                  </Field>
-                  <Field label="Pays *">
-                    <input value={form.country} onChange={(e) => field("country", e.target.value)} placeholder="ex. Turquie" className={inp} />
-                  </Field>
-                </div>
                 <Field label="Région">
                   <select value={form.region} onChange={(e) => field("region", e.target.value)} className={inp}>
                     {REGIONS.map((r) => <option key={r}>{r}</option>)}
                   </select>
                 </Field>
-                <Field label="Description courte">
-                  <textarea
-                    value={form.description}
-                    onChange={(e) => field("description", e.target.value)}
-                    placeholder="Décrivez cette destination en 1-2 phrases…"
-                    rows={3}
-                    className={inp + " resize-none"}
-                  />
-                </Field>
+                <p className="text-xs text-gray-400 leading-relaxed">
+                  Remplissez les traductions ci-dessous pour les textes visibles sur le site.
+                </p>
+              </Section>
+
+              {/* ── Traductions ── */}
+              <Section icon={<FaGlobe />} title="Traductions">
+                <TranslatedFieldGroup
+                  label="Nom de la destination *"
+                  field="name"
+                  form={form}
+                  onChange={field}
+                  placeholder="ex. Istanbul"
+                />
+                <TranslatedFieldGroup
+                  label="Pays *"
+                  field="country"
+                  form={form}
+                  onChange={field}
+                  placeholder="ex. Turquie"
+                />
+                <TranslatedFieldGroup
+                  label="Description courte *"
+                  field="description"
+                  form={form}
+                  onChange={field}
+                  placeholder="Décrivez cette destination en 1-2 phrases…"
+                  textarea
+                />
+                <TranslatedFieldGroup
+                  label="Nom de l'hôtel"
+                  field="hotel"
+                  form={form}
+                  onChange={field}
+                  placeholder="ex. Caldera View Hotel"
+                />
               </Section>
 
               {/* ── Hébergement ── */}
               <Section icon={<FaHotel />} title="Hébergement & groupe">
                 <div className="grid grid-cols-2 gap-4">
-                  <Field label="Nom de l'hôtel">
-                    <input value={form.hotel} onChange={(e) => field("hotel", e.target.value)} placeholder="ex. Caldera View Hotel" className={inp} />
-                  </Field>
                   <Field label="Taille du groupe">
                     <input value={form.groupSize} onChange={(e) => field("groupSize", e.target.value)} placeholder="ex. 2 – 15" className={inp} />
                   </Field>
@@ -590,7 +659,7 @@ async function doDelete(){
               </button>
               <button
                 onClick={save}
-                disabled={!form.name.trim() || !form.country.trim()}
+                disabled={!canSave}
                 className="flex-1 px-4 py-3 rounded-xl bg-[#0092A5] hover:bg-[#007b8c] text-white text-sm font-semibold transition disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {drawer.mode === "add" ? "Ajouter la destination" : "Enregistrer"}
@@ -702,6 +771,42 @@ function Field({ label, children }) {
     <div>
       <label className="block text-xs font-semibold text-gray-500 mb-1.5">{label}</label>
       {children}
+    </div>
+  );
+}
+
+function TranslatedFieldGroup({ label, field, form, onChange, placeholder, textarea = false }) {
+  return (
+    <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4 space-y-4">
+      <div className="flex items-center justify-between gap-3">
+        <label className="block text-sm font-semibold text-[#0a1e2c]">{label}</label>
+        <span className="text-[10px] font-bold uppercase tracking-widest text-[#0092A5]">FR / EN / AR</span>
+      </div>
+      <div className="grid gap-3 md:grid-cols-3">
+        {LANGUAGE_OPTIONS.map(({ code, label: languageLabel }) => {
+          const value = form[`${field}_${code}`] || "";
+          const commonProps = {
+            value,
+            onChange: (e) => onChange(`${field}_${code}`, e.target.value),
+            placeholder,
+            className: inp,
+          };
+
+          return (
+            <Field key={code} label={languageLabel}>
+              {textarea ? (
+                <textarea
+                  {...commonProps}
+                  rows={4}
+                  className={inp + " resize-none"}
+                />
+              ) : (
+                <input {...commonProps} />
+              )}
+            </Field>
+          );
+        })}
+      </div>
     </div>
   );
 }
