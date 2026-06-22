@@ -14,66 +14,67 @@ import {
 } from "react-icons/fa";
 import { MdLocalHospital } from "react-icons/md";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const specialties = [
   {
     icon: <FaTooth />,
-    title: "Dentisterie",
-    text: "Implants, couronnes, facettes, blanchiment — des soins dentaires de haute qualité à des tarifs jusqu'à 70 % inférieurs aux prix européens.",
+    title: t("medical.specialties.dental.title"),
+    text: t("medical.specialties.dental.text"),
   },
   {
     icon: <FaEye />,
-    title: "Ophtalmologie",
-    text: "Correction laser de la vue, chirurgie de la cataracte et bilans ophtalmologiques complets réalisés par des spécialistes reconnus.",
+    title: t("medical.specialties.eye.title"),
+    text: t("medical.specialties.eye.text"),
   },
   {
     icon: <FaHeartbeat />,
-    title: "Cardiologie",
-    text: "Bilans cardiovasculaires approfondis, consultations spécialisées et suivi post-opératoire dans des établissements agréés.",
+    title: t("medical.specialties.heart.title"),
+    text: t("medical.specialties.heart.text"),
   },
   {
     icon: <FaWeight />,
-    title: "Chirurgie Bariatrique",
-    text: "Sleeve gastrectomie, bypass gastrique — un accompagnement médical et nutritionnel complet avant, pendant et après l'intervention.",
+    title: t("medical.specialties.weight.title"),
+    text: t("medical.specialties.weight.text"),
   },
   {
     icon: <FaBone />,
-    title: "Orthopédie",
-    text: "Prothèses de genou et de hanche, arthroscopie et rééducation fonctionnelle avec des chirurgiens orthopédiques de renom.",
+    title: t("medical.specialties.bone.title"),
+    text: t("medical.specialties.bone.text"),
   },
   {
     icon: <FaSyringe />,
-    title: "Esthétique & Bien-être",
-    text: "Rhinoplastie, liposuccion, injections et soins anti-âge dans des cliniques certifiées alliant expertise médicale et confort hôtelier.",
+    title: t("medical.specialties.beauty.title"),
+    text: t("medical.specialties.beauty.text"),
   },
 ];
 
 const steps = [
   {
-    number: "01",
-    title: "Consultation Gratuite",
-    text: "Vous nous transmettez vos documents médicaux. Notre équipe évalue votre dossier et vous oriente vers le spécialiste adapté.",
+    number:"01",
+    title:t("medical.steps.one.title"),
+    text:t("medical.steps.one.text")
   },
   {
-    number: "02",
-    title: "Devis & Planification",
-    text: "Nous vous adressons un devis détaillé incluant les soins, le transport, l'hébergement et les transferts. Vous validez en toute sérénité.",
+    number:"02",
+    title:t("medical.steps.two.title"),
+    text:t("medical.steps.two.text")
   },
   {
-    number: "03",
-    title: "Voyage & Prise en Charge",
-    text: "Nous gérons vols, hôtel et transferts. À l'arrivée, notre coordinateur médical vous accompagne jusqu'à l'établissement de soin.",
+    number:"03",
+    title:t("medical.steps.three.title"),
+    text:t("medical.steps.three.text")
   },
   {
-    number: "04",
-    title: "Soins & Récupération",
-    text: "Votre intervention est réalisée dans un établissement partenaire certifié. Une période de convalescence en hébergement soigné est incluse.",
+    number:"04",
+    title:t("medical.steps.four.title"),
+    text:t("medical.steps.four.text")
   },
   {
-    number: "05",
-    title: "Retour & Suivi",
-    text: "Nous organisons votre retour et assurons le lien avec votre médecin local pour le suivi post-opératoire à distance.",
-  },
+    number:"05",
+    title:t("medical.steps.five.title"),
+    text:t("medical.steps.five.text")
+  }
 ];
 
 const destinations = [
@@ -98,6 +99,8 @@ const destinations = [
 ];
 
 export default function TourismeMedical() {
+  const { t } = useTranslation();
+
   return (
     <>
       {/* ── HERO ── */}
