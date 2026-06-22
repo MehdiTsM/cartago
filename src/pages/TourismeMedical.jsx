@@ -16,66 +16,6 @@ import { MdLocalHospital } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-const specialties = [
-  {
-    icon: <FaTooth />,
-    title: t("medical.specialties.dental.title"),
-    text: t("medical.specialties.dental.text"),
-  },
-  {
-    icon: <FaEye />,
-    title: t("medical.specialties.eye.title"),
-    text: t("medical.specialties.eye.text"),
-  },
-  {
-    icon: <FaHeartbeat />,
-    title: t("medical.specialties.heart.title"),
-    text: t("medical.specialties.heart.text"),
-  },
-  {
-    icon: <FaWeight />,
-    title: t("medical.specialties.weight.title"),
-    text: t("medical.specialties.weight.text"),
-  },
-  {
-    icon: <FaBone />,
-    title: t("medical.specialties.bone.title"),
-    text: t("medical.specialties.bone.text"),
-  },
-  {
-    icon: <FaSyringe />,
-    title: t("medical.specialties.beauty.title"),
-    text: t("medical.specialties.beauty.text"),
-  },
-];
-
-const steps = [
-  {
-    number:"01",
-    title:t("medical.steps.one.title"),
-    text:t("medical.steps.one.text")
-  },
-  {
-    number:"02",
-    title:t("medical.steps.two.title"),
-    text:t("medical.steps.two.text")
-  },
-  {
-    number:"03",
-    title:t("medical.steps.three.title"),
-    text:t("medical.steps.three.text")
-  },
-  {
-    number:"04",
-    title:t("medical.steps.four.title"),
-    text:t("medical.steps.four.text")
-  },
-  {
-    number:"05",
-    title:t("medical.steps.five.title"),
-    text:t("medical.steps.five.text")
-  }
-];
 
 const destinations = [
   {
@@ -100,7 +40,68 @@ const destinations = [
 
 export default function TourismeMedical() {
   const { t } = useTranslation();
-
+  
+  const specialties = [
+    {
+      icon: <FaTooth />,
+      title: t("medical.specialties.dental.title"),
+      text: t("medical.specialties.dental.text"),
+    },
+    {
+      icon: <FaEye />,
+      title: t("medical.specialties.eye.title"),
+      text: t("medical.specialties.eye.text"),
+    },
+    {
+      icon: <FaHeartbeat />,
+      title: t("medical.specialties.heart.title"),
+      text: t("medical.specialties.heart.text"),
+    },
+    {
+      icon: <FaWeight />,
+      title: t("medical.specialties.weight.title"),
+      text: t("medical.specialties.weight.text"),
+    },
+    {
+      icon: <FaBone />,
+      title: t("medical.specialties.bone.title"),
+      text: t("medical.specialties.bone.text"),
+    },
+    {
+      icon: <FaSyringe />,
+      title: t("medical.specialties.beauty.title"),
+      text: t("medical.specialties.beauty.text"),
+    },
+  ];
+  
+  const steps = [
+    {
+      number:"01",
+      title:t("medical.steps.one.title"),
+      text:t("medical.steps.one.text")
+    },
+    {
+      number:"02",
+      title:t("medical.steps.two.title"),
+      text:t("medical.steps.two.text")
+    },
+    {
+      number:"03",
+      title:t("medical.steps.three.title"),
+      text:t("medical.steps.three.text")
+    },
+    {
+      number:"04",
+      title:t("medical.steps.four.title"),
+      text:t("medical.steps.four.text")
+    },
+    {
+      number:"05",
+      title:t("medical.steps.five.title"),
+      text:t("medical.steps.five.text")
+    }
+  ];
+  
   return (
     <>
       {/* ── HERO ── */}
@@ -110,7 +111,7 @@ export default function TourismeMedical() {
           className="absolute inset-0 bg-[#0092A5] opacity-30"
           style={{
             WebkitMaskImage:
-              "linear-gradient(to bottom, black 0%, black 75%, transparent 100%)",
+            "linear-gradient(to bottom, black 0%, black 75%, transparent 100%)",
             maskImage:
               "linear-gradient(to bottom, black 0%, black 75%, transparent 100%)",
           }}
